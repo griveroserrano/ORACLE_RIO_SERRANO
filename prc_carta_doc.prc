@@ -18,6 +18,7 @@ create or replace procedure prc_carta_doc(pin_resv_name_id IN NUMBER,
                                          pout_room_type_desc OUT VARCHAR2,
                                          pout_estadia_char OUT VARCHAR2,
                                          pout_average_rate OUT VARCHAR2,
+                                         pout_impuesto OUT VARCHAR2,
                                          pout_error OUT VARCHAR2)
                                        IS
 
@@ -27,6 +28,7 @@ v_estadia_num NUMBER;
 v_resort VARCHAR2(100);
 v_departure_date DATE;
 v_average NUMBER;
+v_impuesto NUMBER;
 
 --Buscar los valores y realizar los joins de las tablas, ademas agregando las condiciones necesarias
 BEGIN
@@ -100,8 +102,10 @@ BEGIN
 
   IF v_currency_code LIKE 'CLP' THEN
       v_estadia_num := ROUND(v_average * pout_no_of_nights);
+      v_impuesto := v_estadia_num * 0.19;
       pout_estadia_char := to_char(ROUND(v_average) * pout_no_of_nights, 'FM9G999G999');
       pout_average_rate :=(to_char(v_average, 'FM9G999G999'));
+      pout_impuesto:= (to_char(v_impuesto, 'FM9G999G999'));
   END IF;
 
   IF v_currency_code like 'USD' THEN
@@ -133,4 +137,3 @@ END;
     WHEN OTHERS THEN
       pout_error := 'Error: '||SQLERRM;
 END prc_carta_doc;
-/
