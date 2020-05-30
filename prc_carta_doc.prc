@@ -35,10 +35,11 @@ BEGIN
 
   SELECT nr.first|| ' '||nr.guest_name name_complete,
          nr.confirmation_no,
-         nr.arrival_date_time arrival_date,
-         nr.departure_date_time departure_date,
+         NVL(confirmation_ref.arrival_date_data,nr.arrival)arrival_date,
+         NVL(confirmation_ref.departure_date_data,nr.departure) departure_date,
          reservation_ref.get_name(nr.travel_agent_id) travel_agent_name,
-         confirmation_ref.reservation_clerk(nr.insert_user)reservation_clerk,
+        -- confirmation_ref.reservation_clerk(nr.insert_user)reservation_clerk,
+          NVL(confirmation_ref.reservation_clerk(nr.insert_user),nr.rg_udfc32)reservation_clerk,
          (nr.cancellation_date) cancel_date,
          SUBSTR(confirmation_ref.get_mul_deposit_due_date(nr.resort,nr.resv_name_id),4,2)||'-'||
          SUBSTR(confirmation_ref.get_mul_deposit_due_date(nr.resort,nr.resv_name_id),1,2)||'-'||
